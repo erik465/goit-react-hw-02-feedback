@@ -1,5 +1,7 @@
-import {FeedbackUtility} from '../components/FeedbackUtility/FeedbackUtility'
+import {FeedbackOptions} from './FeedbackOptions/FeedbackOptions'
 import {Statistics} from '../components/Statistics/Statistics'
+import { Notification } from './Notification/Notification';
+import { Section } from './Section/Section';
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
 
@@ -11,39 +13,31 @@ export class App extends Component {
     neutral: 0,
   };
 
-  addGood = () =>{
-    this.setState(prevState =>{
-      return {
-        ...prevState,
-        good : prevState.good +1
-      }
-    })
-  }
 
-  addBad = () =>{
+  onLeaveFeedback = (type) =>{
     this.setState(prevState =>{
-      return {
-        ...prevState,
-        bad : prevState.bad +1
-      }
-    })
-  }
+           return {
+             ...prevState,
+             [type] : prevState[type] +1
+          }
+      })
+  } 
 
-  addNeutral = () =>{
-    this.setState(prevState =>{
-      return {
-        ...prevState,
-        neutral : prevState.neutral +1
-      }
-    })
-  }
-
+  
 
   render() {
+    let total = this.state.good + this.state.bad + this.state.neutral;
+    let posPercent = this.state.good / total * 100;
+
+
     return (
       <div id="app">
-        <FeedbackUtility addGood={this.addGood} addBad={this.addBad} addNeutral={this.addNeutral}/>
-        <Statistics good={this.state.good} bad={this.state.bad} neutral={this.state.neutral}/>
+        <Section title="Please leave a feedback">
+            <FeedbackOptions options={Object.keys(this.state)} onLeaveFeedback={this.onLeaveFeedback}/>
+        </Section>
+        <Section title='Statistics'>
+          {total === 0 ?<Notification message='There is no feedback'/> : <Statistics good={this.state.good} bad={this.state.bad} neutral={this.state.neutral} total={total} positivePercentage={Math.round(posPercent)}/>}
+        </Section>
       </div>
   );
   }
