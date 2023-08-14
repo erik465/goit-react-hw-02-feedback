@@ -1,8 +1,5 @@
 
 export const FeedbackOptions = ({options, onLeaveFeedback}) => {
-
-    console.log(options)
-
     return (
         <div>
             {options.map(option => {
